@@ -3,13 +3,39 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 const config = {
-  apiKey: "AIzaSyBBW0Bg_uCwZj-Cf9-u-L9bqGKxjnOmZV8",
-  authDomain: "expensify-22b58.firebaseapp.com",
-  databaseURL: "https://expensify-22b58.firebaseio.com",
-  projectId: "expensify-22b58",
+  apiKey: "AIzaSyCIzAkAho8-Bzb5fuOj5ORQpaY7OtKESMQ",
+  authDomain: "crwn-db-fdda0.firebaseapp.com",
+  databaseURL: "https://crwn-db-fdda0.firebaseio.com",
+  projectId: "crwn-db-fdda0",
   storageBucket: "",
-  messagingSenderId: "666713026053",
-  appId: "1:666713026053:web:72ba47df5008a976"
+  messagingSenderId: "526882785014",
+  appId: "1:526882785014:web:c4544eafc4d2ea1d"
+};
+
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  if (!userAuth) return;
+  
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+  
+  const snapshot = await userRef.get();
+  
+  if (!snapshot.exists) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+    
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData
+      });
+    } catch (error) {
+      console.log('error creating user', error.message);
+    }
+  }
+  
+  return userRef;
 };
 
 firebase.initializeApp(config);
